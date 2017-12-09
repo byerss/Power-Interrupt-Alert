@@ -9,12 +9,19 @@ int ledState = LOW;
 unsigned long previousMillis = 0;
 const long interval = 200;
 
+int button = 7;
+int greenLED = 9;
+int redLED = 13;
+int blueLED = 11;
+
+
+
 void setup() {
   
 Serial.begin(9600);
-pinMode(7, INPUT_PULLUP);
-pinMode(9, OUTPUT); //GREEN LED
-pinMode(13, OUTPUT); //RED LED
+pinMode(button, INPUT_PULLUP);
+pinMode(greenLED, OUTPUT); //GREEN LED
+pinMode(redLED, OUTPUT); //RED LED
 
   
 }
@@ -32,13 +39,13 @@ if (latched == true) {                //Check if ACK latched
 else {
   
   if(digitalRead(7) == LOW){          //Button is Pressed
-  digitalWrite(13, LOW);              //Turn off RED led
+  digitalWrite(redLED, LOW);              //Turn off RED led
   counter = ++counter;                //Increment Counter for Fade-in ACK
     if(counter == 255){               //Counter Full - Do alternate Blink
       while(digitalRead(7) == LOW){   //Blink Green LED to indicate Latch while button continues to be pressed
-        digitalWrite(9, LOW);
+        digitalWrite(greenLED, LOW);
         delay(100);
-        digitalWrite(9, HIGH);
+        digitalWrite(greenLED, HIGH);
         delay(100); 
       }
       latched = true;                 //Set Latch to True
@@ -60,11 +67,11 @@ else {
        ledState = LOW;
     }
     
-    digitalWrite(13, ledState);       //Write LED state to blink
+    digitalWrite(redLED, ledState);       //Write LED state to blink
   }
  }
  
- analogWrite(9, counter);             //PWM Counter to Fade-in button press ACK
+ analogWrite(greenLED, counter);             //PWM Counter to Fade-in button press ACK
 
 
 }
@@ -74,6 +81,6 @@ delay(10);                            //Give time for Fade-In
 }
 
 void trap_is_clean(){                 //Call Function to skip main code
-  digitalWrite(9, HIGH);              //Green LED Steady ON
-  digitalWrite(13, LOW);              //Red LED OFF
+  digitalWrite(greenLED, HIGH);              //Green LED Steady ON
+  digitalWrite(redLED, LOW);              //Red LED OFF
 }
