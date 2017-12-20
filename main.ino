@@ -13,7 +13,11 @@ int button = 5;
 int greenLED = 1;
 int redLED = 0;
 int blueLED = 4;
-
+int buttonCurrentState; 
+int buttonPrevState;
+int brightnessState = 0;
+int brightness = 50;
+int fadeAmount = 1;
 
 
 void setup() {
@@ -84,6 +88,69 @@ delay(10);                            //Give time for Fade-In
 }
 
 void trap_is_clean(){                 //Call Function to skip main code
-  digitalWrite(greenLED, HIGH);              //Green LED Steady ON
-  digitalWrite(redLED, LOW);              //Red LED OFF
-}
+  //digitalWrite(greenLED, HIGH);              //Green LED Steady ON
+  //digitalWrite(redLED, LOW);              //Red LED OFF
+
+  
+  buttonCurrentState = digitalRead(button);
+  
+  if (buttonCurrentState == LOW && buttonPrevState == HIGH) {
+    
+    brightnessState++;
+    
+    if (brightnessState == 6) {
+       brightnessState = 0; 
+    }
+  }
+
+
+  switch (brightnessState) {
+    case 0:
+    analogWrite(greenLED, 255);
+    analogWrite(blueLED, 0);
+    analogWrite(redLED, 0);
+    break;
+    
+    case 1:
+    analogWrite(greenLED, 100);
+    analogWrite(blueLED, 0);
+    analogWrite(redLED, 0);
+    break;
+
+    case 2:
+    analogWrite(greenLED, 50);
+    analogWrite(blueLED, 0);
+    analogWrite(redLED, 0);
+    break;
+
+    case 3:
+    analogWrite(greenLED, 2);
+    analogWrite(blueLED, 0);
+    analogWrite(redLED, 0);
+    break;
+
+    case 4:
+    analogWrite(greenLED, brightness);
+    analogWrite(blueLED, 0);
+    analogWrite(redLED, 0);
+    brightness = brightness + fadeAmount;
+      if (brightness <= 10 || brightness >= 75) {
+        fadeAmount = -fadeAmount;
+      }
+    delay(20);    
+    break;
+    
+    case 5:
+    analogWrite(greenLED, 0);
+    analogWrite(blueLED, 0);
+    analogWrite(redLED, 0);
+    break;
+
+    
+    }
+  
+  buttonPrevState = buttonCurrentState;
+    
+  }
+ 
+  
