@@ -9,10 +9,10 @@ int ledState = LOW;
 unsigned long previousMillis = 0;
 const long interval = 200;
 
-int button = 7;
-int greenLED = 9;
-int redLED = 13;
-int blueLED = 11;
+int button = 5;
+int greenLED = 1;
+int redLED = 0;
+int blueLED = 4;
 
 
 
@@ -20,8 +20,11 @@ void setup() {
   
 Serial.begin(9600);
 pinMode(button, INPUT_PULLUP);
-pinMode(greenLED, OUTPUT); //GREEN LED
-pinMode(redLED, OUTPUT); //RED LED
+pinMode(greenLED, OUTPUT);    //GREEN LED
+pinMode(redLED, OUTPUT);      //RED LED
+pinMode(blueLED, OUTPUT);     //BLUE LED
+pinMode(3, OUTPUT);           //GND for Button
+digitalWrite(3, LOW);
 
   
 }
@@ -38,23 +41,23 @@ if (latched == true) {                //Check if ACK latched
 
 else {
   
-  if(digitalRead(7) == LOW){          //Button is Pressed
+  if(digitalRead(button) == LOW){          //Button is Pressed
   digitalWrite(redLED, LOW);              //Turn off RED led
   counter = ++counter;                //Increment Counter for Fade-in ACK
     if(counter == 255){               //Counter Full - Do alternate Blink
-      while(digitalRead(7) == LOW){   //Blink Green LED to indicate Latch while button continues to be pressed
+      while(digitalRead(button) == LOW){   //Blink Green LED to indicate Latch while button continues to be pressed
         digitalWrite(greenLED, LOW);
-        delay(100);
+        delay(75);
         digitalWrite(greenLED, HIGH);
-        delay(100); 
+        delay(75); 
       }
       latched = true;                 //Set Latch to True
-      return 0;                       //Return to begining of Main Code
+      return;                       //Return to begining of Main Code
       }
       
   }
 
-  if(digitalRead(7) == HIGH){         //Blink Red LED to Indicate Power Failure
+  if(digitalRead(button) == HIGH){         //Blink Red LED to Indicate Power Failure
     
      counter = 0;                     //Reset counter for ACK button if released before Latch
 
@@ -72,7 +75,7 @@ else {
  }
  
  analogWrite(greenLED, counter);             //PWM Counter to Fade-in button press ACK
-
+ //analogWrite(redLED, counter);
 
 }
   
